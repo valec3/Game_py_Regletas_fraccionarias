@@ -18,9 +18,17 @@ class Boton:
         ancho = imagen.get_width()
         alto = imagen.get_height()
         self.imagen = pygame.transform.scale(imagen,(int(ancho*escala),int(alto*escala)))
-        self.rect = imagen.get_rect()
+        self.rect = self.imagen.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
+    def dibujar(self, ventana: pygame.Surface) -> None:
+        """
+        Dibuja el botón en la ventana especificada.
+
+        :param ventana: La superficie donde se dibujará el botón.
+        :type ventana: pygame.Surface
+        """
+        ventana.blit(self.imagen, (self.rect.x, self.rect.y))
     def verificar_click(self):
         """
         Metodo para verificar si se hizo click en el boton
@@ -30,23 +38,16 @@ class Boton:
         """
         # Obtiene la posición actual del mouse.
         posicion_mouse = pygame.mouse.get_pos()
-        
+        activo = False
         # Si la posición del mouse está dentro del rectángulo del botón, verifica si se ha hecho clic en él.
         if self.rect.collidepoint(posicion_mouse):
             # Si se hace clic en el botón, cambia su estado a True.
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
+                activo = True
             # Si se suelta el botón del mouse, cambia su estado a False.
             if pygame.mouse.get_pressed()[0] == 0:
                 self.clicked = False
-                
-        # Devuelve el estado actual del botón.
-        return self.clicked
-    def dibujar(self, ventana: pygame.Surface) -> None:
-        """
-        Dibuja el botón en la ventana especificada.
 
-        :param ventana: La superficie donde se dibujará el botón.
-        :type ventana: pygame.Surface
-        """
-        ventana.blit(self.imagen, (self.rect.x, self.rect.y))
+        # Devuelve el estado actual del botón.
+        return activo

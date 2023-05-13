@@ -1,12 +1,15 @@
 import pygame
 import sys
+import time
+
+# Importar clase boton y regletas
+from boton import Boton
+from logica import Regletas
+
 # Importar colores
 from colores import *
 
-# Importar clase boton
-from boton import Boton
 
-from logica import Regletas
 
 # Iniciar libreria pygame
 pygame.init()
@@ -29,22 +32,28 @@ imagen_boton_basico=pygame.image.load("img/boton_basico.png").convert_alpha()
 imagen_boton_avanzado=pygame.image.load("img/boton_avanzado.png").convert_alpha()
 
 # Crear los botones
-boton_basico = Boton(100,200,imagen_boton_basico,0.5)
-boton_avanzado = Boton(450,200,imagen_boton_avanzado,0.5)
+boton_basico = Boton(50,200,imagen_boton_basico,0.5)
+boton_avanzado = Boton(500,200,imagen_boton_avanzado,0.5)
 
 # Crear texto pregunta 1
-font = pygame.font.Font(None, 32)  # None indica la fuente predeterminada
-text = font.render("Elija una regleta :)", True, PINK)
-text_x = 350
-text_y = 100
+font = pygame.font.Font(None, 50)  # None indica la fuente predeterminada
+font_opc = pygame.font.Font(None,34)  # None indica la fuente predeterminada
+texto_pregunta = font.render("Elija una regleta :)", True, PINK)
+texto_opciones = font_opc.render("Regletas disponibles: ( 1 - 1/2 - 1/3 - 1/4 - 1/5 - 1/6 - 1/8 - 1/10 - 1/12 )", True, WHITE)
+texto_opciones_2 = font_opc.render("y las variantes que se especifica en el manual", True, WHITE)
+text_input = "" # variable que almacenará la entrada del usuario
 
 
+regletas_identificadores= {1:"1/1",2:"1/2",3:"1/3",4:"1/4",5:"1/5",6:"1/6",7:"1/8",8:"1/10"}
 regletas_imgs = Regletas(ventana)
 circle_y = 140
 juego_activo = False
 Modo_de_juego = ""
+entrada_regletas = []
 game_over = False
 opcion = 1
+opciones_elegidas =[]
+resultado=0
 # Bucle del juego
 while not game_over:
     for evento in pygame.event.get():
@@ -68,18 +77,44 @@ while not game_over:
                 if circle_y > 474 and opcion > 8:
                     circle_y = 474
                     opcion = 8
+            if evento.key == pygame.K_RETURN: # si el usuario presiona ENTER
+                entrada_regletas.append(text_input) # muestra la entrada del usuario en la consola
+                text_input = "" # vaciar la entrada de texto
+                opciones_elegidas.append(opcion)
+            elif evento .key == pygame.K_BACKSPACE: # si el usuario presiona retroceso
+                text_input = text_input[:-1] # eliminar el último carácter
+
+            else:
+                text_input += evento.unicode # agregar el carácter ingresado a la entrada de texto
     # Poner imagen de fondo
     ventana.blit(background_image_modificado,(0,0))
 
     # Mostrar interfaz del juego principal
-    if juego_activo:
-        ventana.blit(text, (text_x, text_y))
+    if juego_activo and Modo_de_juego == "Basic":
+        ventana.blit(texto_pregunta, (300, 90))
         regletas_imgs.mostrar_opciones(ventana)
-
         pygame.draw.rect(ventana,WHITE,(410,circle_y,40,46))
-        print(pygame.mouse.get_pos())
-        print(opcion)
-
+        if len(opciones_elegidas) >=2:
+            Modo_de_juego = "Res"
+            resultado = str(eval(regletas_identificadores[opciones_elegidas[0]])/eval(regletas_identificadores[opciones_elegidas[1]]))
+        # print(opcion)
+        
+    elif juego_activo and Modo_de_juego == "Avanc":
+        ventana.blit(texto_opciones, (100, 100))
+        ventana.blit(texto_opciones_2, (100, 130))
+        input_text = font.render("Ingrese texto: " + text_input, True, BLUE)
+        ventana.blit(input_text, (100, 180)) # posicionar el objeto de texto en la pantalla
+        if len(entrada_regletas) >=2:
+            Modo_de_juego="Res"
+            resultado = str(eval(entrada_regletas[0])/eval(entrada_regletas[1]))
+            
+    elif juego_activo and Modo_de_juego == "Res":
+        input_text = font.render("El resultado es:  " + resultado, True, BLUE)
+        ventana.blit(input_text, (100, 180)) # posicionar el objeto de texto en la pantalla
+        if len(opciones_elegidas) >= 2 and "" in entrada_regletas:
+                entrada_regletas = regletas_identificadores[opciones_elegidas[0]],regletas_identificadores[opciones_elegidas[1]]
+        regletas_imgs.dibujar(ventana,entrada_regletas)
+        
     # Verificar si el menu esta activo
     if  (boton_avanzado.clicked or boton_basico.clicked):
         juego_activo = True
@@ -87,13 +122,15 @@ while not game_over:
         ventana.fill(GREENISH_BLUE)
         boton_basico.dibujar(ventana)
         boton_avanzado.dibujar(ventana)
-        if boton_basico.verificar_click():
-            print("Modo basico")
-        elif boton_avanzado.verificar_click():
-            print("Modo avanzado")
-        # print(boton_avanzado.clicked,boton_basico.clicked)
-    
         
+        if boton_avanzado.verificar_click():
+            print("Modo Avanzado")
+            Modo_de_juego="Avanc"
+        elif boton_basico.verificar_click():
+            print("Modo basico")
+            Modo_de_juego="Basic"
+            
+
     # Actualizar pantalla
     pygame.display.flip()
     reloj.tick(30)
