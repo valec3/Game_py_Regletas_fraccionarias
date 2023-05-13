@@ -20,14 +20,24 @@ class Regletas:
         # Inicializar ventana
         self.ventana = ventana
 
-    def logica_juego(self,regletas):
+    def logica_juego(self, regletas):
+        """
+        Devuelve las imágenes de la regleta correspondiente a cada número y el número de regletas para cada uno.
+        Args: 
+            regletas (list): Lista de regletas, con el dividendo y el divisor.
+        Returns: 
+            tuple: Una tupla de imágenes de la regleta correspondiente al dividendo y al divisor, y el número de regletas para cada uno.
+        """
+        # Separar el dividendo y el divisor en numerador y denominador
         dividendo, divisor = regletas
-        a,b = map(int,dividendo.split("/"))
-        c,d = map(int,divisor.split("/"))
+        a, b = map(int, dividendo.split("/"))
+        c, d = map(int, divisor.split("/"))
+
         # Devolver imágenes del divisor y del dividendo y el número de regletas para cada uno
         imagenes_dividendo = self.imagenes_regletas[b-1]
         imagenes_divisor = self.imagenes_regletas[d-1]
         return imagenes_dividendo, imagenes_divisor, a, c
+
 
     def mostrar_opciones(self, ventana):
         # Escalar y mostrar imagen de la pregunta
