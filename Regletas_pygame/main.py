@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import re
 
 # Importar clase boton y regletas
 from boton import Boton
@@ -41,11 +42,12 @@ boton_avanzado = Boton(500,200,imagen_boton_avanzado,0.5)
 font = pygame.font.Font(None, 50)  # None indica la fuente predeterminada
 font_opc = pygame.font.Font(None,34) 
 texto_pregunta = font.render("Elija una regleta :)", True, PINK)
-texto_opciones = font_opc.render("Regletas disponibles: ( 1 - 1/2 - 1/3 - 1/4 - 1/5 - 1/6 - 1/8 - 1/10 - 1/12 )", True, WHITE)
+texto_opciones = font_opc.render("Regletas disponibles: ( 1/1 - 1/2 - 1/3 - 1/4 - 1/5 - 1/6 - 1/8 - 1/10 - 1/12 )", True, WHITE)
 texto_opciones_2 = font_opc.render("y las variantes que se especifica en el manual", True, WHITE)
+mensaje_error = font.render("Ingresaste caracteres invalidos", True, RED)
 text_input = "" # variable que almacenará la entrada del usuario en el modo avanzado
 
-
+patron = r"\d+/\d+"
 regletas_identificadores= {1:"1/1",2:"1/2",3:"1/3",4:"1/4",5:"1/5",6:"1/6",7:"1/8",8:"1/10"}
 regletas_imgs = Regletas(ventana)
 circle_y = 140
@@ -79,8 +81,14 @@ while not game_over:
                 if circle_y > 474 and opcion > 8:
                     circle_y = 474
                     opcion = 8
-            if evento.key == pygame.K_RETURN: # si el usuario presiona ENTER
-                entrada_regletas.append(text_input) # muestra la entrada del usuario en la consola
+            elif evento.key == pygame.K_RETURN: # si el usuario presiona ENTER
+                if re.match(patron, text_input):
+                    print("El carácter cumple con el formato int/int")
+                    entrada_regletas.append(text_input) # muestra la entrada del usuario en la consola
+                else:
+                    print("El carácter no cumple con el formato int/int")
+                    ventana.blit(mensaje_error, (100, 400))
+                    
                 text_input = "" # vaciar la entrada de texto
                 opciones_elegidas.append(opcion)
             elif evento .key == pygame.K_BACKSPACE: # si el usuario presiona retroceso
@@ -108,7 +116,7 @@ while not game_over:
         ventana.blit(input_text, (100, 180)) # posicionar el objeto de texto en la pantalla
         if len(entrada_regletas) >=2:
             Modo_de_juego="Resultado"
-            resultado = str(int(eval(entrada_regletas[0])/eval(entrada_regletas[1])))
+            resultado = str(eval(entrada_regletas[0])/eval(entrada_regletas[1]))
             
     elif juego_activo and Modo_de_juego == "Resultado":
         input_text = font.render("El resultado es:  " + resultado+" Manzanitas", True, BLUE)
