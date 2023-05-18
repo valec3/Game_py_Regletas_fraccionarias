@@ -4,15 +4,15 @@ class Regletas:
     # Cargar imágenes de regletas en una lista
     imagenes_regletas = [
         pygame.image.load("img/regleta_1.png"),
-        pygame.image.load('img/regletas_1-2.png'),
-        pygame.image.load('img/regletas_1-3.png'),
-        pygame.image.load('img/regletas_1-4.png'),
-        pygame.image.load('img/regletas_1-5.png'),
-        pygame.image.load('img/regletas_1-6.png'),
-        pygame.image.load('img/regletas_1-7.png'),
-        pygame.image.load('img/regletas_1-8.png'),
-        pygame.image.load('img/regletas_1-7.png'),
-        pygame.image.load('img/regletas_1-10.png') 
+        pygame.image.load('img/regleta_1-2.png'),
+        pygame.image.load('img/regleta_1-3.png'),
+        pygame.image.load('img/regleta_1-4.png'),
+        pygame.image.load('img/regleta_1-5.png'),
+        pygame.image.load('img/regleta_1-6.png'),
+        pygame.image.load('img/regleta_1-7.png'),
+        pygame.image.load('img/regleta_1-8.png'),
+        pygame.image.load('img/regleta_1-7.png'),
+        pygame.image.load('img/regleta_1-10.png') 
     ]
     # Cargar imagen de la pregunta
     imagen_pregunta = pygame.image.load("img/regletas_pregunta.png")
