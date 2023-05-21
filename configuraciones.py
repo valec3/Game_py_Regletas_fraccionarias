@@ -1,6 +1,14 @@
+# Copyright (c) 2023 Valec3
+#
+# Este archivo es parte del programa Regletas fraccionarias.
+# Juego de regletas fraccionarias para niños
+#
+# Derechos de autor (c) 2023 Valec3
+# Todos los derechos reservados.
+
+import pygame
 # Importar colores
 import colores 
-import pygame
 
 class Configuraciones:
     """Una clase para almacenar todos los ajustes del juego."""
