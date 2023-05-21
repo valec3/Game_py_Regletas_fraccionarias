@@ -35,7 +35,7 @@ class Regletas:
         # Texto
         self.texto_pregunta = Texto("Elija una tipo de regleta :)",42,colores.PINK,350,90)
         self.texto_opciones_l1 = Texto("Regletas disponibles: ( 1/1 - 1/2 - 1/3 - 1/4 - 1/5 - 1/6 - 1/8 - 1/10)",40,colores.WHITE,120,100)
-        self.texto_opciones_l2 = Texto("y las variantes que se especifica en el manual",40, colores.WHITE,120,140)
+        self.texto_opciones_l2 = Texto("Siga el formato especificado en el manual",40, colores.WHITE,120,140)
         self.texto_salir_rep = Texto("Salir con Q - Reiniciar con R", 32, colores.DARK_BLUE,10,10)
         self.text_input = "" # variable que almacenará la entrada del usuario en el modo avanzado
         
@@ -95,7 +95,7 @@ class Regletas:
         
         # Escalar y mostrar imagen de la pregunta
         imagen = pygame.transform.scale(self.imagen_pregunta, (400, 400))
-        ventana.blit(imagen, (300, 140))
+        ventana.blit(imagen, (400, 140))
 
     def dibujar(self, ventana,entrada_regletas):
         # Obtener imágenes de las regletas y el número de regletas para cada uno
@@ -105,19 +105,25 @@ class Regletas:
         ancho_divisor = divisor.get_width()
         ancho_dividendo = dividendo.get_width()
 
+        desbordamiento = False
+        
         # Dibujar regletas en la ventana
         for i in range(num[0]) :
             ventana.blit(divisor,(120+i*ancho_divisor,240))
+            if 120+i*ancho_divisor > 1200:
+                desbordamiento = True
         for i in range(den[0]):
             ventana.blit(dividendo,(120+i*ancho_dividendo,320))
+            if 120+i*ancho_dividendo > 1200:
+                desbordamiento = True
         
         texto_why=Texto("¿Porque?",34,colores.CYAN,120,400)
         texto_why.draw(self.ventana)
         
-        # Posicion de salida
+        # Posicion de salida (EJE Y)
         x , y = 460 , 530
         
-        if cociente < 1 and num[0] != 7 and den[0] !=7:
+        if cociente < 1:
             texto_div = Texto(
                 f"La regleta {den[0]}/{den[1]} es mayor que la regleta {num[0]}/{num[1]}. Asi que el resultado sera menor a cero.",
                 30,
@@ -133,6 +139,19 @@ class Regletas:
             ventana.blit(divisor,(120+i*ancho_divisor,x))
         for i in range(cociente*den[0]):
             ventana.blit(dividendo,(120+i*ancho_dividendo,y))
+            
+        if num[1] == 7 or den[1] == 7:
+            texto_nodis = Texto("Las representaciones para las regletas 1/7 y 1/9 no estan disponibles",30,colores.RED,120,600)
+            texto_nodis.draw(self.ventana)
+        
+        if desbordamiento:
+            texto_advertencia = Texto("! EL NUMERO DE REGLETAS INGRESADO ESTA EXCEDIENDO EL LIMITE DE PANTALLA !",
+                                    34,
+                                    colores.RED,
+                                    120,680
+                                    )
+            texto_advertencia.draw(self.ventana)
+            
 
     def run_game(self):
         """Inicia el bucle principal del juego."""
@@ -178,7 +197,8 @@ class Regletas:
             if len(self.text_input) >=1:
                 self.text_input = self.text_input[:-1] # eliminar el último carácter
         else:
-            self.text_input += evento.unicode # agregar el carácter ingresado a la entrada de texto
+            if self.modo_juego == "A":
+                self.text_input += evento.unicode # agregar el carácter ingresado a la entrada de texto
         self.mover_selector(evento)
         
     def _check_play_button(self, mouse_pos):
@@ -225,14 +245,14 @@ class Regletas:
         elif self.modo_juego == "A":
             self.texto_opciones_l1.draw(self.ventana)
             self.texto_opciones_l2.draw(self.ventana)
-            input_text = Texto("Ingrese texto: "+self.text_input,40,colores.PINK,140,220)
+            input_text = Texto("Ingrese su regleta (a/b): "+self.text_input,44,colores.WHITE,140,220)
             input_text.draw(self.ventana) # posicionar el objeto de texto en la pantalla
             if len(self.entrada_regletas) >=2:
                 self.modo_juego="Resultado"
                 self.resultado = str(eval(self.entrada_regletas[0])/eval(self.entrada_regletas[1]))
                 
         elif self.modo_juego == "Resultado":
-            input_text = Texto("El resultado de dividir estas regletas es: "+self.resultado,40,colores.PINK,120,160)
+            input_text = Texto("El resultado de dividir estas regletas es: "+self.resultado,40,colores.LIGHT_YELLOW,120,160)
             input_text.draw(self.ventana) # posicionar el objeto de texto en la pantalla
             
             if len(self.opciones_elegidas) >= 2 and len(self.entrada_regletas) < 2:
@@ -257,13 +277,12 @@ class Regletas:
             
             # Dibujar la pantalla del modo
             self.iniciar_modo()
-            
             #Dibujar el boton si el juego esta inactivo.
             if not self.game_active:
                 self.modo_juego=""
                 self.entrada_regletas=[]
                 self.opciones_elegidas = []
-                self.ventana.fill(self.configuraciones.bg_botons)
+                self.ventana.blit(self.configuraciones.bg_botons,(0,0))
                 self.dibujar_botones()
                 
             if self.show_error:
