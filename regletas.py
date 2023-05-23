@@ -7,7 +7,7 @@
 # Todos los derechos reservados.
 
 
-import sys,pygame,time,re
+import sys,pygame,re
 from configuraciones import Configuraciones
 from boton import Boton
 from texto import Texto
@@ -65,7 +65,6 @@ class Regletas:
         self.modo_juego = ""
         pygame.display.set_caption("Regletas Fraccionarias")
         
-        
     def dibujar_botones(self):
         """Dibujar los botones en pantalla."""
         self.btn_basico.dibujar(self.ventana)
@@ -85,7 +84,7 @@ class Regletas:
             a, b = map(int, dividendo.split("/"))
             c, d = map(int, divisor.split("/"))
         except SyntaxError:
-            self.mostrar_error(3)
+            sys.exit()
         cociente = int((a/b) / (c/d))
         if b > 10:
             b = 7
@@ -99,7 +98,6 @@ class Regletas:
         except IndexError:
             self.game_active = False
         
-    
     def mostrar_opciones(self, ventana):
         
         # Escalar y mostrar imagen de la pregunta
@@ -161,7 +159,6 @@ class Regletas:
                                     )
             texto_advertencia.draw(self.ventana)
             
-
     def run_game(self):
         """Inicia el bucle principal del juego."""
         while True:
@@ -189,6 +186,7 @@ class Regletas:
         
         """Responde a teclas presionadas."""
         if evento.key == pygame.K_q or evento.key == pygame.K_ESCAPE:#Salir del juego
+            pygame.exit()
             sys.exit()
         elif evento.key == pygame.K_r:
             self.game_active = False
@@ -268,16 +266,6 @@ class Regletas:
                     self.entrada_regletas = self.regletas_identificadores[self.opciones_elegidas[0]],self.regletas_identificadores[self.opciones_elegidas[1]]
             self.dibujar(self.ventana,self.entrada_regletas)
             
-    def mostrar_error(self, duracion):
-        self.show_error = True
-        self.start_time = time.time()
-
-        while time.time() - self.start_time < duracion:
-            self.ventana.fill(colores.BLACK)
-            texto_error=Texto("ERROR INESPERADO",40,colores.RED,400,400)
-            texto_error.draw(self.ventana)            
-        self.show_error = False
-        
     def _actualizar_ventana(self):
             """Actualizar imagenes en la ventana y mostrar ventana actual."""
             # Redibuja el fondo durante cada pasada por el bucle.
@@ -293,9 +281,6 @@ class Regletas:
                 self.opciones_elegidas = []
                 self.ventana.blit(self.configuraciones.bg_botons,(0,0))
                 self.dibujar_botones()
-                
-            if self.show_error:
-                self.mostrar_error( 3)
                 
             #Actualizar pantalla
             pygame.display.flip()
