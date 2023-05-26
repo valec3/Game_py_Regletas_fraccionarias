@@ -42,10 +42,10 @@ class Regletas:
         self.rectangulo_btn_avz = self.imagen_btn_avanzado.get_rect()
         
         # Texto
-        self.texto_pregunta = Texto("Elija una tipo de regleta :)",42,colores.PINK,350,90)
+        self.texto_pregunta = Texto("Elija una tipo de regleta :)",42,colores.WHITE,350,90)
         self.texto_opciones_l1 = Texto("Regletas disponibles: ( 1/1 - 1/2 - 1/3 - 1/4 - 1/5 - 1/6 - 1/8 - 1/10)",40,colores.WHITE,120,100)
         self.texto_opciones_l2 = Texto("Siga el formato especificado en el manual",40, colores.WHITE,120,140)
-        self.texto_salir_rep = Texto("Salir con Q - Reiniciar con R", 32, colores.DARK_BLUE,10,10)
+        self.texto_salir_rep = Texto("Salir con Q - Reiniciar con R", 32, colores.LIGHT_YELLOW,10,10)
         self.text_input = "" # variable que almacenará la entrada del usuario en el modo avanzado
         
         # EXTRAS
@@ -132,7 +132,7 @@ class Regletas:
         
         if cociente < 1:
             texto_div = Texto(
-                f"La regleta {den[0]}/{den[1]} es mayor que la regleta {num[0]}/{num[1]}. Asi que el resultado sera menor a cero.",
+                f"La representacion de {den[0]}/{den[1]} es mayor que la representacion de {num[0]}/{num[1]}. Asi que el resultado sera menor a cero.",
                 30,
                 colores.DARK_GREEN,
                 120,430
@@ -147,7 +147,7 @@ class Regletas:
         for i in range(cociente*den[0]):
             ventana.blit(dividendo,(120+i*ancho_dividendo,y))
             
-        if num[1] == 7 or den[1] == 7:
+        if num[1] == 7 or den[1] == 9:
             texto_nodis = Texto("Las representaciones para las regletas 1/7 y 1/9 no estan disponibles",30,colores.RED,120,600)
             texto_nodis.draw(self.ventana)
         
@@ -186,7 +186,7 @@ class Regletas:
         
         """Responde a teclas presionadas."""
         if evento.key == pygame.K_q or evento.key == pygame.K_ESCAPE:#Salir del juego
-            pygame.exit()
+            pygame.QUIT
             sys.exit()
         elif evento.key == pygame.K_r:
             self.game_active = False
@@ -194,10 +194,10 @@ class Regletas:
             if self.text_input == "1":
                 self.text_input = "1/1"
             if re.match(self.patron, self.text_input): #Verificar si la entrada del usuario es correcta
-                print("El carácter cumple con el formato int/int")
+                print("El carácter cumple con el formato")
                 self.entrada_regletas.append(self.text_input) # muestra la entrada del usuario en la consola
             else:
-                print("El carácter no cumple con el formato int/int")
+                print("El carácter no cumple con el formato")
             self.text_input = "" # vaciar la entrada de texto
             self.opciones_elegidas.append(self.opcion)
         elif evento.key == pygame.K_BACKSPACE: # si el usuario presiona retroceso
@@ -290,3 +290,7 @@ class Regletas:
 if __name__ == "__main__":
     Regletas_fraccionarias = Regletas()
     Regletas_fraccionarias.run_game()
+    
+    
+    
+    
